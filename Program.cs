@@ -52,6 +52,15 @@ builder.Services.AddAuthentication().AddCookie();
 // builder.Services.AddKeyedScoped<IAnimal, Cat>("gato");
 // builder.Services.AddKeyedScoped<IAnimal, Dog>("perro");
 
+//Añædir servicios segun entorno
+// if(builder.Environment.IsDevelopment())
+// {
+//     builder.Services.AddSingleton<ISender, FakeSender>();
+// }
+// else
+// {
+//     builder.Services.AddSingleton<ISender, EmailSender>();
+// }
 var app = builder.Build();
 
 //Aqui configuramos el comportamiento de la app generada por el builder
@@ -60,12 +69,26 @@ app.MapGet("/", (HttpContext context) =>{
     return Results.Text($"Hola, {name}");
     }
 );
+
+// app.MapGet("/", () =>
+//     app.Environment.IsDevelopment()
+//         ? "Hello developer!"
+//         : "Hello user!"
+// );
+
+//Si seteamos otros nombres de entorno diferente a development stagign o production se puede checkear asi:
+if(app.Environment.IsEnvironment("Home"))
+{
+    app.MapGet("/home", () => "This is only available for Home environment");
+}
 //Asi en teoria se añaden los controladores en MVC
 // app.MapDefaultControllerRoute();
 
 app.MapGet("/time",()=>{
     return Results.Text($"La hora actual es: {DateTime.Now}");
 });
+
+app.MapGet("/environment", () => app.Environment.EnvironmentName);
 
 app.MapGet("/sum",(HttpContext context)=>{
     var a = int.Parse(context.Request.Query["a"]);
