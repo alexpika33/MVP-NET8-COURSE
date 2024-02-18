@@ -2,9 +2,55 @@
 using System.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// builder.Host -> Configuración del host
+// builder.WebHost -> Configuración del servidor
+// builder.Services -> Configuración de servicios
+
 //Aqui configuramos los settings, logging, dependencias ...
 //El siguiente es un ejemplo de como configurar settings desde un archivo json
 // builder.Configuration.AddJsonFile("mysettings.json", optional: false);
+
+//Aqui se añaden los servicios que se injectan
+builder.Services.AddControllersWithViews();
+
+// Registra los servicios de Entity Framework Core para SQLite
+// builder.Services.AddDbContext<ApplicationDbContext>(
+//     options => options.UseSqlite(connectionString: "...")
+// ); Creo que aqui no existe el metodo addDbContext por que no tenemos puesto el EntityFramework
+
+// Registra los servicios de autenticación basada en cookies
+builder.Services.AddAuthentication().AddCookie();
+
+// Registra los servicios del framework MVC
+// builder.Services.AddControllersWithViews();
+
+// Cuando algún componente requiera una instancia de ICalculator,
+// el contenedor retornará siempre un nuevo objeto MyCalculator:
+// builder.Services.AddTransient<ICalculator, MyCalculator>();
+
+// Cuando en el contexto de una petición los componentes requieran instancias de
+// IDataConnection, el contenedor retornará siempre el mismo MyDataConnection,
+// que será liberado al finalizar su proceso:
+// builder.Services.AddScoped<IDataConnection, MyDataConnection>();
+
+// Se creará una instancia de MyRemoteClient cuando se solicite un IRemoteClient
+// por primera vez, y se reutilizará en todas las peticiones posteriores
+// durante la vida de la aplicación:
+// builder.Services.AddSingleton<IRemoteClient, MyRemoteClient>();
+
+// Usa la factoría para crear la instancia de ICalculator:
+// builder.Services.AddTransient<ICalculator>(svc => new MyCalculator());
+
+// var singleton = new MySingleton()
+// {
+    // TODO: inicializar aquí las propiedades del objeto singleton
+// };
+// builder.Services.AddSingleton(singleton);
+
+//La key no tiene por que ser texto, es de tipo object
+// builder.Services.AddKeyedScoped<IAnimal, Cat>("gato");
+// builder.Services.AddKeyedScoped<IAnimal, Dog>("perro");
 
 var app = builder.Build();
 
@@ -14,6 +60,8 @@ app.MapGet("/", (HttpContext context) =>{
     return Results.Text($"Hola, {name}");
     }
 );
+//Asi en teoria se añaden los controladores en MVC
+// app.MapDefaultControllerRoute();
 
 app.MapGet("/time",()=>{
     return Results.Text($"La hora actual es: {DateTime.Now}");
