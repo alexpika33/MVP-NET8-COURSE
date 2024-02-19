@@ -62,6 +62,24 @@ builder.Services.AddAuthentication().AddCookie();
 //     builder.Services.AddSingleton<ISender, EmailSender>();
 // }
 var app = builder.Build();
+//Poniendolo de primero captura todas las excepciones de los middlewares. Este middleware viene por defecto añadido cuando es Development, en stagign y production no viene añadido por defecto da error 500
+// if(app.Environment.IsDevelopment())
+// {
+//     app.UseDeveloperExceptionPage();
+// }
+
+//************************************ vamos por la parte de la leccion donde enseña useStatusCodePages - SEGUIR AQUI, STEP 13 ****************************
+app.UseStatusCodePages();
+app.UseWelcomePage("/welcome"); // un middleware que muestra una pagina de bienvenida en esa ruta si todo fue bien
+
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/friendlyError500.html"); //Este archivo habria que crearlo dentro de wwwroot en la raiz del proyecto
+}
+
+// ¡Importante! Incluir el siguiente middleware es necesario 
+// para que la aplicación pueda retornar archivos estáticos:
+app.UseStaticFiles();
 
 //Aqui configuramos el comportamiento de la app generada por el builder
 app.MapGet("/", (HttpContext context) =>{ 
@@ -69,6 +87,15 @@ app.MapGet("/", (HttpContext context) =>{
     return Results.Text($"Hola, {name}");
     }
 );
+
+//Test para probar el UseDeveloperExceptionPage
+app.Run(async (context) =>
+{
+    if (context.Request.Path == "/boom")
+        throw new InvalidOperationException("Invalid operation");
+
+    await context.Response.WriteAsync("Hello, world!");
+});
 
 // app.MapGet("/", () =>
 //     app.Environment.IsDevelopment()
