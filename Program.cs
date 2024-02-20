@@ -61,15 +61,39 @@ builder.Services.AddAuthentication().AddCookie();
 // {
 //     builder.Services.AddSingleton<ISender, EmailSender>();
 // }
+
+//Error handlers 
+builder.Services.AddExceptionHandler<MyExceptionHandler>();
+
 var app = builder.Build();
+
+app.UseExceptionHandler("/Home/Error"); //para manejarlos con lo de arriba hay que usar el exceptionHandler
 //Poniendolo de primero captura todas las excepciones de los middlewares. Este middleware viene por defecto añadido cuando es Development, en stagign y production no viene añadido por defecto da error 500
 // if(app.Environment.IsDevelopment())
 // {
 //     app.UseDeveloperExceptionPage();
 // }
 
-//************************************ vamos por la parte de la leccion donde enseña useStatusCodePages - SEGUIR AQUI, STEP 13 ****************************
-app.UseStatusCodePages();
+// app.UseStatusCodePages(
+//     "text/plain",
+//     "Just another HTTP {0} error :)" // {0} será reemplazado por el status code
+// );
+// app.UseStatusCodePagesWithRedirects("/error{0}.html"); Con esto redirigira en una pestañæ nueva en teoria y mostraria el archivo de error
+app.UseStatusCodePagesWithReExecute("/error404"); //Con esto redirigira a la pagina de error404 y mostrara el mensaje que le pongamos en el middleware de error404
+app.Use(async (ctx, next) =>
+{
+    if (ctx.Request.Path == "/error404")
+    {
+        // var feature = ctx.Features.Get<IStatusCodeReExecuteFeature>();
+        // var path = feature.OriginalPath;
+        await ctx.Response.WriteAsync($"Path not found: {ctx.Request.Path}");
+    }
+    else
+    {
+        await next(ctx);
+    }
+});
+
 app.UseWelcomePage("/welcome"); // un middleware que muestra una pagina de bienvenida en esa ruta si todo fue bien
 
 if (!app.Environment.IsDevelopment())
@@ -81,6 +105,20 @@ if (!app.Environment.IsDevelopment())
 // para que la aplicación pueda retornar archivos estáticos:
 app.UseStaticFiles();
 
+// app.UseStatusCodePages(async statusCodeContext =>
+// {
+//     var httpContext = statusCodeContext.HttpContext;
+//     var statusCode = httpContext.Response.StatusCode;
+//     if (statusCode == 404)
+//     {
+//         httpContext.Response.Redirect("/error404.html");//Para esto necesitamos el UseStaticFiles y ademas tener el archivo en wwwroot
+//     }
+//     else
+//     {
+//         await httpContext.Response.WriteAsync($"Error {statusCode}");
+//     }
+// });
+
 //Aqui configuramos el comportamiento de la app generada por el builder
 app.MapGet("/", (HttpContext context) =>{ 
     var name = (string)context.Request.Query["name"] ?? "Usuario Anónimo 1";
@@ -89,13 +127,13 @@ app.MapGet("/", (HttpContext context) =>{
 );
 
 //Test para probar el UseDeveloperExceptionPage
-app.Run(async (context) =>
-{
-    if (context.Request.Path == "/boom")
-        throw new InvalidOperationException("Invalid operation");
+// app.Run(async (context) =>
+// {
+//     if (context.Request.Path == "/boom")
+//         throw new InvalidOperationException("Invalid operation");
 
-    await context.Response.WriteAsync("Hello, world!");
-});
+//     // await context.Response.WriteAsync("Hello, world!");
+// });
 
 // app.MapGet("/", () =>
 //     app.Environment.IsDevelopment()
