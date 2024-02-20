@@ -72,14 +72,21 @@ var app = builder.Build();
 //manejo de archivos staticos
 // app.UseDefaultFiles();
 // app.UseStaticFiles();
-app.UseDirectoryBrowser();// en vez de todos estos por separado , podemos usar el siguiente:
-// app.UseFileServer(enableDirectoryBrowsing: true);
-app.UseStaticFiles(new StaticFileOptions
-{
-    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "files")),
-    RequestPath = "/files", //Esto no hace que se tenga que acceder al directorio en el buscador a traves de esa url, si que si buscamos un archivo,solo se servira si esta dentro de esa carpeta
-});
+// app.UseDirectoryBrowser();// en vez de todos estos por separado , podemos usar el siguiente:
+// // app.UseFileServer(enableDirectoryBrowsing: true);
+// app.UseStaticFiles(new StaticFileOptions
+// {
+//     FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "files")),
+//     RequestPath = "/files", //Esto no hace que se tenga que acceder al directorio en el buscador a traves de esa url, si que si buscamos un archivo,solo se servira si esta dentro de esa carpeta
+//     //la explicacion de requestPath creo que no es del todo correcta
+// });
 
+app.UseFileServer(new FileServerOptions
+{
+    RequestPath = "/static", // asi si que sirve el default.html desde la raiz static
+    EnableDefaultFiles = false, // si esto está a false deberia mostrar en /static el listado de archivos, si está a true, deberia mostrar el contenido del default.html
+    EnableDirectoryBrowsing = true
+});
 app.UseExceptionHandler("/Home/Error"); //para manejarlos con lo de arriba hay que usar el exceptionHandler
 //Poniendolo de primero captura todas las excepciones de los middlewares. Este middleware viene por defecto añadido cuando es Development, en stagign y production no viene añadido por defecto da error 500
 // if(app.Environment.IsDevelopment())
