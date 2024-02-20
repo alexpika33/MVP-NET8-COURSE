@@ -1,5 +1,6 @@
 
 using System.Diagnostics;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -65,7 +66,19 @@ builder.Services.AddAuthentication().AddCookie();
 //Error handlers 
 builder.Services.AddExceptionHandler<MyExceptionHandler>();
 
+//Manejo de archivos estaticos
+builder.Services.AddDirectoryBrowser();
 var app = builder.Build();
+//manejo de archivos staticos
+// app.UseDefaultFiles();
+// app.UseStaticFiles();
+app.UseDirectoryBrowser();// en vez de todos estos por separado , podemos usar el siguiente:
+// app.UseFileServer(enableDirectoryBrowsing: true);
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "files")),
+    RequestPath = "/files", //Esto no hace que se tenga que acceder al directorio en el buscador a traves de esa url, si que si buscamos un archivo,solo se servira si esta dentro de esa carpeta
+});
 
 app.UseExceptionHandler("/Home/Error"); //para manejarlos con lo de arriba hay que usar el exceptionHandler
 //Poniendolo de primero captura todas las excepciones de los middlewares. Este middleware viene por defecto añadido cuando es Development, en stagign y production no viene añadido por defecto da error 500
@@ -103,7 +116,7 @@ if (!app.Environment.IsDevelopment())
 
 // ¡Importante! Incluir el siguiente middleware es necesario 
 // para que la aplicación pueda retornar archivos estáticos:
-app.UseStaticFiles();
+// app.UseStaticFiles();
 
 // app.UseStatusCodePages(async statusCodeContext =>
 // {
@@ -120,11 +133,11 @@ app.UseStaticFiles();
 // });
 
 //Aqui configuramos el comportamiento de la app generada por el builder
-app.MapGet("/", (HttpContext context) =>{ 
-    var name = (string)context.Request.Query["name"] ?? "Usuario Anónimo 1";
-    return Results.Text($"Hola, {name}");
-    }
-);
+// app.MapGet("/", (HttpContext context) =>{ 
+//     var name = (string)context.Request.Query["name"] ?? "Usuario Anónimo 1";
+//     return Results.Text($"Hola, {name}");
+//     }
+// );
 
 //Test para probar el UseDeveloperExceptionPage
 // app.Run(async (context) =>
