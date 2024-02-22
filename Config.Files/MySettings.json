@@ -1,0 +1,8 @@
+{
+    "title":"My First Web JSON",
+  "Options":{
+    "StringOption":"Esto es string options",
+    "IntegerOption":123456,
+    "BoolOption":true
+  }
+}

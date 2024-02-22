@@ -1,16 +1,17 @@
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddOptions();
-builder.Services.Configure<MyAppSettings>(builder.Configuration);
-builder.Configuration.AddIniFile("Config.Files/MySettings.ini", optional: false, reloadOnChange: true); //El parametro reloadOnChange es el que hace que si cambia algo de estos archivos la app lo coge
-var env = builder.Environment.EnvironmentName;
-builder.Configuration.AddIniFile(
-    $"Config.Files/MySettings.{env}.ini",  // Ejemplo: MySettings.Development.ini
-    optional: true,
-    reloadOnChange: true
-);
+// builder.Services.AddOptions();
+// builder.Services.Configure<MyAppSettings>(builder.Configuration);
+// builder.Configuration.AddIniFile("Config.Files/MySettings.ini", optional: false, reloadOnChange: true); //El parametro reloadOnChange es el que hace que si cambia algo de estos archivos la app lo coge
+// var env = builder.Environment.EnvironmentName;
+// builder.Configuration.AddIniFile(
+//     $"Config.Files/MySettings.{env}.ini",  // Ejemplo: MySettings.Development.ini
+//     optional: true,
+//     reloadOnChange: true
+// );
 
 // builder.WebHost.ConfigureAppConfiguration(config =>
 // {
@@ -22,11 +23,11 @@ builder.Configuration.AddIniFile(
 
 //     var settings = new Dictionary<string, string>
 //     {
-//         ["title"] = "New title"
+//         ["title"] = "New title 22112"
 //     };
-//     config.AddConfiguration.AddInMemoryCollection(settings.Cast<KeyValuePair<string, string?>>());
-// }); 
-//****TODO: arreglar esto y ademas realizar el siguiente ejercicio************************/
+//     config.AddInMemoryCollection(settings);
+// }); //This works but shows a warning
+//****TODO: realizar el siguiente ejercicio************************/
 /*
 Partiendo de una aplicación ASP.NET Core vacía, añádele un archivo settings .JSON y otro .INI. Puedes usar los que hemos visto en esta lección.
 
@@ -38,10 +39,13 @@ Comprueba que "el último gana" modificando en el archivo .INI el valor de un se
 
 Por último, haz cambios en el código para acceder a la configuración de la aplicación de forma tipada, en lugar de hacerlo a través del IConfiguration.
 
-Comprueba que si modificas el contenido de los archivos de settings que has creado, la aplicación tendrá acceso a los nuevos valores siempre que estés estableciendo a cierto el parámetro reloadOnChanges.
-
+Comprueba que si modificas el contenido de los archivos de settings que has creado, la aplicación tendrá acceso a los nuevos valores siempre que estés estableciendo a cierto el parámetro reloadOnChanges.ecit4p.
 
 */
+//EJERCICIOS
+builder.Services.Configure<MyAppSettings>(builder.Configuration);
+builder.Configuration.AddJsonFile("Config.Files/MySettings.json", optional: false, reloadOnChange: true);
+builder.Configuration.AddIniFile("Config.Files/MySettings.ini", optional: false, reloadOnChange: true);
 var app = builder.Build();
 
 // app.Run(async (ctx)=>
