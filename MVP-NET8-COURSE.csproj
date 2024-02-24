@@ -1,13 +1,14 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>MVP_NET8_COURSE</RootNamespace>
+    <UserSecretsId>a62518c8-8c34-4c4b-94b0-896d12e5f1b4</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.2"/>
-    <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.2.0"/> 
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.2.0" /> 
     <!-- El paquete anterior no seria necesario ya que iria dentor del sdk web -->
   </ItemGroup>
 </Project>
