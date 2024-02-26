@@ -1,36 +1,64 @@
+//ESTO ES PARA MIDDLEWARES PERSONALIZADOS
+using System.Diagnostics;
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddSingleton<MyService>();
-builder.Logging.ClearProviders();
-builder.Logging.AddDebug();
-
-builder.Logging.SetMinimumLevel(LogLevel.Warning);
-
-builder.Logging.AddFilter((provider, category, loglevel) =>
-    !category.StartsWith("Microsoft")
-    && loglevel >= LogLevel.Information
-);
+builder.Services.AddTransient<SimpleProfilerMiddleware>();
 var app = builder.Build();
 
+// var logger = app.Services
+//                 .GetRequiredService<ILoggerFactory>()
+//                 .CreateLogger("Profiler");
 
-// El siguiente mensaje sólo será visible en la ventana Debug de Visual Studio
-// En consola no aparecerá absolutamente nada porque no la hemos añadido
-app.Logger.LogInformation("Configuring pipeline...");
 
-app.Logger.LogInformation("Inicializando Proceso");
-if(app.Environment.IsDevelopment())
-{
-    app.Logger.LogWarning("Estamos en desarrollo");
-}
-else
-{
-    app.Logger.LogWarning("No estamos en desarrollo");
-}
+// app.Use(async (context, next) =>
+// {
+//     var watch = Stopwatch.StartNew();
+//     await next(context);
+//     var path = context.Request.Path;
+//     var statusCode = context.Response.StatusCode;
+//     logger.LogDebug($"Path='{path}', status={statusCode}, time={watch.Elapsed}"); //Al principio no me funcionaba pq no estaba bien configurado el nivel de log en el appsettings
+// });
+// app.UseFileServer(enableDirectoryBrowsing: true);
 
-app.Run(async ctx =>
+// app.Run(async ctx =>
+// {
+//     await ctx.Response.WriteAsync("Hello World!");
+// });
+
+//En el caso de tener que pasar mas parametros al middleare le pasamos los objetos con los parametros que queramos en el UseMiddleware y ademas los añædimos en el constructor del middleware
+app.UseMiddleware<MyCustomMiddleware>();
+
+//En el siguiente se le crean en el constructor directamente, sin pasarlos por aquí
+app.UseMiddleware<SimpleProfilerMiddleware>();
+app.UseSimpleProfiler();//Esto es lo mismo que lo anterior solo que atraves de su extension
+
+//Aqui depende de la ruta que coja se pueden configurar diferentes middlewares
+app.Map("/SignalR", (IApplicationBuilder signalrBranch) =>
 {
-    var service = ctx.RequestServices.GetRequiredService<MyService>();
-    service.DoWork();
-    await ctx.Response.WriteAsync("Hello World!");
+    // signalrBranch.UseCors(…);
+    // signalrBranch.UseSignalR(…);
 });
+
+app.Map("/API", (IApplicationBuilder apiBranch) =>
+{
+    // apiBranch.UseCors(…);
+    // apiBranch.UseLogging(…);
+    // apiBranch.UseNancy(…);
+});
+
+app.MapWhen(
+    ctx => ctx.Request.Path.StartsWithSegments("/API"),
+    branch =>
+    {
+        // Añadir middlewares para esta rama, por ejemplo:
+        // branch.UseCors();
+    }
+);
+app.MapWhen(
+    ctx => ctx.Request.Cookies.ContainsKey("auth"),
+    branch => {
+        // Añadir middlewares a esta rama del pipeline
+    }
+);
+
 
 app.Run();
