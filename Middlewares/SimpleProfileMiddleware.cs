@@ -12,12 +12,7 @@ public class SimpleProfilerMiddleware : IMiddleware //Si implementamos esta inte
         // _next = next;
         _logger = logger;
     }
-    public static IApplicationBuilder UseSimpleProfiler(this IApplicationBuilder app)
-        {
-            app.UseMiddleware<SimpleProfilerMiddleware>();
-            return app;
-        }
-
+   
     // public async Task Invoke(HttpContext context) //Si fuesen servicios con ciclo de vida scoped o per request habria que meterlos aqui en el Invoke
     // {
     //     var watch = Stopwatch.StartNew();
