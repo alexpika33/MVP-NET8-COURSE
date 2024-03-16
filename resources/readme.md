@@ -1,0 +1,7 @@
+Aqui irian los archivos de texto para las traducciones, con el siguiente formato
+
+Si estamos implementando recursos localizados para la clase MyClass, el archivo de recursos debe denominarse MyClass.{culture}.resx, por ejemplo MyClass.es-ES.resx.
+Si nuestro proyecto se llama MyApp y la clase MyClass se encontrara en un espacio de nombres como MyApp.One, el archivo de recursos debería llamarse One.MyClass.es-ES.resx. En otras palabras, el archivo de recursos debe llamarse como la clase completamente calificada, exceptuando el default namespace del proyecto (que coincide con el nombre del ensamblado).
+Siguiendo las reglas anteriores, en lugar de usar puntos podríamos usar carpetas en la estructura de archivos para separar el nombre de la clase de los namespaces, por ejemplo, /Resources/One/MyClass.es-ES.resx.
+La cultura puede indicarse con el par cultura-región (como en "es-ES") o sólo cultura (como en "es").
+La selección del archivo de recursos seguirá una secuencia en cascada. Por ejemplo, si la cultura actual es "es-ES", primero se intentará buscar un archivo específico como /Resources/MyClass.es-ES.resx; si no existe, se intentará con /Resources/MyClass.es.resx, y si tampoco hay éxito, /Resources/MyClass.resx.
