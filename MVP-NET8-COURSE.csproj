@@ -9,6 +9,17 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.2.0" /> 
+    <!-- Estos sigueintes son para helth checks -->
+    <PackageReference Include="AspNetCore.HealthChecks.System" Version="8.0.0"/>
+    <PackageReference Include="AspNetCore.HealthChecks.SqlServer" Version="8.0.0"/>
+    <PackageReference Include="AspNetCore.HealthChecks.Uris" Version="8.0.0"/>
+        <PackageReference Include="AspNetCore.HealthChecks.UI" Version="8.0.0"/>
+        <PackageReference Include="AspNetCore.HealthChecks.UI.InMemory.Storage" Version="8.0.0"/>
+        <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="8.0.0"/>
+        
+
+<!-- END helth checks packages -->
+
     <!-- El paquete anterior no seria necesario ya que iria dentor del sdk web -->
   </ItemGroup>
 </Project>
