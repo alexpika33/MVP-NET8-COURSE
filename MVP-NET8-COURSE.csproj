@@ -16,7 +16,9 @@
         <PackageReference Include="AspNetCore.HealthChecks.UI" Version="8.0.0"/>
         <PackageReference Include="AspNetCore.HealthChecks.UI.InMemory.Storage" Version="8.0.0"/>
         <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="8.0.0"/>
-        
+<PackageReference Include="Microsoft.AspNetCore.RateLimiting" Version="7.0.0-rc.2.22476.2" />
+        <PackageReference Include="Microsoft.AspNetCore.ResponseCompression" Version="2.2.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Rewrite" Version="2.2.0" />
 
 <!-- END helth checks packages -->
 
