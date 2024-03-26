@@ -1,0 +1,12 @@
+@model MVC.Models.Entities.Post;
+@{
+   ViewData["Title"] = Model.Title;
+}
+<h2>@Model.Title</h2>
+<div class="post-body">
+   @Model.Text
+</div>
+<div>
+   Posted by @Model.Author
+   on @Model.Date.ToString("d")
+</div>

@@ -1,3 +1,5 @@
+using MVC.Models.Entities;
+
 public class BlogServices : IBlogServices
 {
     // Repositorio en memoria

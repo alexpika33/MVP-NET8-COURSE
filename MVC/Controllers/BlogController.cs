@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 public class BlogController: Controller
 {
     private readonly IBlogServices _blogServices;
@@ -17,25 +18,27 @@ public class BlogController: Controller
     }
 
     public IActionResult Archive(int year, int month)
-{
-    var posts = _blogServices.GetPostsByDate(year, month);
-    return View(posts);
+    {
+        var posts = _blogServices.GetPostsByDate(year, month);
+        return View(posts);
+    }
+
+    public IActionResult Save(Product product)
+    {
+    //    ...
+    return RedirectToAction("Index");
+    }
+
+    [Route("blog/{slug}")]
+    public IActionResult ViewPost(string slug)
+    {
+        var post = _blogServices.GetPost(slug);
+        if (post == null)
+            return NotFound();
+        else
+            return View(post);
+    }
+
+
 }
 
-public IActionResult Save(Product product)
-{
-//    ...
-}
-
-[Route("blog/{slug}")]
-public IActionResult ViewPost(string slug)
-{
-    var post = _blogServices.GetPost(slug);
-    if (post == null)
-        return NotFound();
-    else
-        return View(post);
-}
-
-
-}

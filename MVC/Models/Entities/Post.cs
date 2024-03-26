@@ -1,3 +1,4 @@
+namespace MVC.Models.Entities;
 public class Post
 {
    public string Title { get; set; }

@@ -20,9 +20,14 @@ app.UseStaticFiles();
 app.UseRouting();
  
 app.UseAuthorization();
+app.MapControllerRoute(
+    name: "archive",
+    pattern: "blog/archive/{year}/{month}",
+    defaults: new { controller="Blog", action="Archive"}
+);
 
-// app.MapControllerRoute(
-//     name: "default",
-//     pattern: "{controller=Home}/{action=Index}/{id?}");
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();

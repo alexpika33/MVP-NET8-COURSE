@@ -1,3 +1,5 @@
+using MVC.Models.Entities;
+
 public interface IBlogServices
 {
     IEnumerable<Post> GetLatestPosts(int max);
